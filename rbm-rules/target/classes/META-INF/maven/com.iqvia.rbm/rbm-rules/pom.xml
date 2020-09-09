@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.iqvia.rbm</groupId>
+		<artifactId>rbm-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>rbm-rules</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.iqvia.rbm</groupId>
+			<artifactId>rbm-services</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<!-- clara, the rules engine -->
+		<dependency>
+			<groupId>com.cerner</groupId>
+			<artifactId>clara-rules</artifactId>
+			<version>0.20.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Since we are generating rules we will need a clojure dependency -->
+		<dependency>
+			<groupId>org.clojure</groupId>
+			<artifactId>clojure</artifactId>
+			<version>1.9.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/instaparse/instaparse -->
+		<dependency>
+			<groupId>instaparse</groupId>
+			<artifactId>instaparse</artifactId>
+			<version>1.4.10</version>
+		</dependency>
+
+	</dependencies>
+	<repositories>
+		<!-- Where clara and clojure artifacts are published -->
+		<repository>
+			<id>clojars.org</id>
+			<url>https://repo.clojars.org</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<!-- Builds manifest file to specify main class -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.clara.example.Main</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<version>3.2.0</version>
+			</plugin>
+			<!-- Required for running clojure -->
+			<plugin>
+				<groupId>com.theoryinpractise</groupId>
+				<artifactId>clojure-maven-plugin</artifactId>
+				<version>1.8.4</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- To specify the java version we wish to compile with -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+				<version>3.8.1</version>
+			</plugin>
+			<!-- To make the an uberjar such that we will have all required dependencies 
+				when running the jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.2</version>
+				<configuration>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
